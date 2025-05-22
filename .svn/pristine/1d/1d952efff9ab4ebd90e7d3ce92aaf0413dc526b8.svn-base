@@ -1,0 +1,31 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ZombieDataBinding : MonoBehaviour
+{
+    public Animator animator;
+    public float Speed
+    {
+        set
+        {
+            animator.SetFloat(Anim_Key_Speed, value);
+        }
+    }
+   public bool Attack
+    {
+        set
+        {
+            animator.Play("Attack", 0, 0);
+        }
+    }
+    private int Anim_Key_Speed;
+    // Start is called before the first frame update
+    void Awake()
+    {
+       
+        Anim_Key_Speed = Animator.StringToHash("Speed");
+    }
+
+   
+}

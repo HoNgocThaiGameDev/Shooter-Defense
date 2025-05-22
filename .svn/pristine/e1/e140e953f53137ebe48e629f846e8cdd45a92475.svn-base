@@ -1,0 +1,27 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+public enum DialogIndex
+{
+    SettingDialog = 0,
+    WeaponInfoDialog = 1,
+    MessageDialog = 2
+}
+public class DialogParam
+{
+
+}
+public class MessageDialogParam : ViewParam
+{
+    public string mess;
+}
+public class DialogConfig
+{
+    public static DialogIndex[] dialogIndices = {
+
+        DialogIndex.SettingDialog,
+        DialogIndex.WeaponInfoDialog,
+        DialogIndex.MessageDialog
+    };
+
+}

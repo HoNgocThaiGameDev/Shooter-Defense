@@ -1,0 +1,109 @@
+using Newtonsoft.Json;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+using UnityEngine;
+
+
+[CreateAssetMenu(fileName ="DataModel",menuName ="BY/DataModel",order =1)]
+public class DataModel : ScriptableObject
+{
+    //C.R.U.D
+    private UserData userData;
+    public void LoadDataLocal(Action<bool> callback)
+    {
+        if(LoadData())
+        {
+            callback(false);
+        }
+        else
+        {
+            // create new data 
+            userData = new UserData();
+            UserInfo userInfo = new UserInfo();
+            userInfo.username = "Brayang";
+            userInfo.level = 1;
+            userInfo.exp = 0;
+            userInfo.guns_equip = ConfigManager.instance.configDefault.weapon_ids;
+            userData.info = userInfo;
+
+            Inventory inventory = new Inventory();
+            inventory.cash = ConfigManager.instance.configDefault.cash;
+            Dictionary<string, WeaponData> dic = new Dictionary<string, WeaponData>();
+            foreach(int id in ConfigManager.instance.configDefault.weapon_ids)
+            {
+                WeaponData data = new WeaponData { id = id, level = 1 };
+                dic.Add(id.Tokey(),data);
+            }
+            inventory.dic_weapon = dic;
+            userData.inventory = inventory;
+
+
+            MissionData missionData = new MissionData();
+            missionData.dic_misson.Add("K_1", new MissionDataItem { id = 1, star = 0 });
+
+            userData.missionData = missionData;
+
+
+
+
+            SaveData();
+            callback(true);
+        }
+    }
+
+    #region Read 
+    public T ReadData<T>(string path)
+    {
+      
+        List<string> paths = path.ConvertPathToList();
+    
+        object outData;
+        ReadDataByPath(paths, userData,out outData);
+        return (T)outData;
+    }
+    private void ReadDataByPath(List<string> paths,object data_read, out object data_out)
+    {
+       
+
+        string p = paths[0];
+        Type t = data_read.GetType();
+        FieldInfo field = t.GetField(p);
+        if(paths.Count==1)
+        {
+            data_out = field.GetValue(data_read);
+        }
+        else
+        {
+            paths.RemoveAt(0);
+            ReadDataByPath(paths, field.GetValue(data_read), out data_out);
+        }
+    }
+    #endregion
+    #region Load
+    private void SaveData()
+    {
+        string s_data = JsonConvert.SerializeObject(userData);
+        PlayerPrefs.SetString("DATA",s_data);
+    }
+    private bool LoadData()
+    {
+        if(PlayerPrefs.HasKey("DATA"))
+        {
+            string s_data = PlayerPrefs.GetString("DATA");
+            if(s_data.Length<10)
+            {
+                return false;
+            }
+            else
+            {
+                userData = JsonConvert.DeserializeObject<UserData>(s_data);
+                return true;
+            }
+           
+        }
+        return false;
+    }
+    #endregion
+}

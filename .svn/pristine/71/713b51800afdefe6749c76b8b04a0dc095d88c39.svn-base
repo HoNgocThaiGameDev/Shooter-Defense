@@ -1,0 +1,23 @@
+using EnhancedUI.EnhancedScroller;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class WeaponViewGunListItem : EnhancedScrollerCellView
+{
+    public Image iconGun;
+    public TMP_Text name_lb;
+    public TMP_Text level_lb;
+    // Start is called before the first frame update
+   public void SetDataCell(WeaponListData data)
+    {
+        iconGun.overrideSprite = SpriteLiblaryControl.instance.GetSpriteByName(data.cf.Prefab);
+        name_lb.text = data.cf.Name;
+    }
+    public void OnClick()
+    {
+
+    }
+}

@@ -1,0 +1,75 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CharacterControl : MonoBehaviour
+{
+    public Transform trans;
+    public float speed_move;
+    [NonSerialized]
+    public CharacterDataBinding dataBinding;
+    public bool isAim = false;
+    private void Awake()
+    {
+        trans = transform;
+        dataBinding = gameObject.GetComponent<CharacterDataBinding>();
+    }
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+    public void OnDamage(int damage)
+    {
+        Debug.LogError(" character hit : " + damage);
+    }
+    // Update is called once per frame
+    void Update()
+    {
+        //if(Input.GetMouseButton(0))
+        //{
+        //    isAim = true;
+        //}
+        //else
+        //{
+        //    isAim = false;
+        //}
+        isAim = Input.GetMouseButton(0);
+
+        float x = Input.GetAxis("Horizontal");// -1->0->1
+      //  x = Input.GetAxisRaw("Horizontal");//-1,0,1
+        float z = Input.GetAxis("Vertical");
+        Vector3 delta_move = new Vector3(x, 0, z);
+        if(!isAim)// isAim==false , isAim==true
+        {
+            if (delta_move.magnitude > 0)//>,>=,==,!=
+            {
+                trans.forward = delta_move;
+                trans.position = trans.position + delta_move * Time.deltaTime * speed_move;
+            }
+            else
+            {
+                // 
+            }
+
+            float speed_anim = delta_move.magnitude;
+
+            dataBinding.MoveDir = new Vector3(0,0,speed_anim);
+        }
+        else
+        {
+            if (delta_move.magnitude > 0)//>,>=,==,!=
+            {
+                trans.position = trans.position + delta_move * Time.deltaTime * speed_move;
+            }
+            // quay vector 
+            //  Vector3 move_dir_anim = trans.rotation * delta_move;
+            // move 8 dir
+            Vector3 move_dir_anim = trans.InverseTransformDirection( delta_move);
+         
+            dataBinding.MoveDir = move_dir_anim;
+        }
+       
+    }
+}

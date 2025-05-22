@@ -1,0 +1,98 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Random = UnityEngine.Random;
+public class ZombieControl : EnemyControl
+{
+    public float speed_move = 2;
+    private Vector3 ogrinal_pos;
+    private Vector3 targetMove;
+    public ZombieDataBinding dataBinding;
+    // Start is called before the first frame update
+    void Start()
+    {
+        critical = 3;
+        ogrinal_pos = trans.position;
+        RandomTarget();
+    }
+    void FixedUpdate()
+    {
+
+    }
+    private void RandomTarget()
+    {
+        float x = Random.Range(-4f, 4f);//  1, 1,2 ,.... 2.999
+        float z = UnityEngine.Random.Range(-6, 6);//1,2,3
+
+        targetMove =ogrinal_pos+ new Vector3(x, 0, z);
+    }
+    /*
+    // Update is called once per frame
+    protected override void Update()
+    {
+        base.Update();
+        Vector3 dir = characterControl.trans.position - trans.position;
+        dir.Normalize();
+        float dot = Vector3.Dot(trans.forward, dir);
+
+        Vector3 target_character = characterControl.trans.position;
+
+        float dis = Vector3.Distance(trans.position, target_character);
+
+        if (dis <= range_Detect && dot>0.5f)
+        {
+           
+            // chase 
+            //time_count_attack >= attack_speed&&
+          
+
+            if(dis<=range_Attack&& time_count_attack >= attack_speed)
+            {
+                Debug.LogError("Attack by zombie");
+                time_count_attack = 0;
+                dataBinding.Speed = 0;
+            }
+            else
+            {
+                Vector3 dir_move = target_character - trans.position;
+                Quaternion q = Quaternion.LookRotation(dir_move.normalized, Vector3.up);
+                trans.localRotation = Quaternion.Slerp(trans.localRotation, q, Time.deltaTime * 3);
+                // trans.position = Vector3.Lerp(trans.position, targetMove, Time.deltaTime * speed_move);
+                trans.Translate(Vector3.forward * Time.deltaTime * speed_move * 2);
+                dataBinding.Speed = 2;
+               // dataBinding.NewPos = trans.position;
+            }
+        }
+        else
+        {
+            float dis_move = Vector3.Distance(trans.position, targetMove);
+            if (dis_move <= 0.1f)
+            {
+                RandomTarget();
+            }
+            else
+            {
+                Vector3 dir_move = targetMove - trans.position;
+                Quaternion q = Quaternion.LookRotation(dir_move.normalized, Vector3.up);
+                trans.localRotation = Quaternion.Slerp(trans.localRotation, q, Time.deltaTime * 2);
+                // trans.position = Vector3.Lerp(trans.position, targetMove, Time.deltaTime * speed_move);
+                trans.Translate(Vector3.forward * Time.deltaTime * speed_move);
+                dataBinding.Speed = 1;
+                // dataBinding.NewPos = trans.position;
+            }
+        }
+
+
+        // move 
+
+     
+    }
+    */
+    public override void OnDamage(int damge)
+    {
+        hp = hp - damge;
+        if (hp < 0)
+            hp = 0;
+        base.OnDamage(damge);
+    }
+}

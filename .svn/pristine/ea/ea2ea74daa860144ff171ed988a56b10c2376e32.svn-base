@@ -1,0 +1,62 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public delegate void ChangeGunHandle(WeaponBehaviour wp);
+public class WeaponControl : BySingleton<WeaponControl>
+{
+    public List<WeaponBehaviour> weapons;
+    public List<string> name_wps;
+    public Transform anchor_wp;
+    private int index_wp = -1;
+    private WeaponBehaviour cur_wp;
+    public event ChangeGunHandle OnChangeGun;
+    public event Action<WeaponBehaviour> OnChangeGun_2;
+    // Start is called before the first frame update
+    void Start()
+    {
+        foreach (string e in name_wps)
+        {
+            GameObject go = Instantiate(Resources.Load("Weapons/" + e, typeof(GameObject))) as GameObject;
+            WeaponBehaviour wp_behaviour = go.GetComponent<WeaponBehaviour>();
+            weapons.Add(wp_behaviour);
+            go.transform.SetParent(anchor_wp, false);
+            go.SetActive(false);
+
+        }
+        ChangeGun();
+    }
+
+    private void ChangeGun()
+    {
+        index_wp++;
+        if(index_wp>=weapons.Count)
+        {
+            index_wp = 0;
+        }
+        WeaponBehaviour wp = weapons[index_wp];
+        wp.gameObject.SetActive(true);
+        if(cur_wp!=null)
+        {
+            cur_wp.gameObject.SetActive(false);
+        }
+       // cur_wp?.gameObject.SetActive(false);
+        cur_wp = wp;
+
+        if(OnChangeGun!=null)
+        {
+            OnChangeGun(cur_wp);
+        }
+        // OnChangeGun?.Invoke(cur_wp);
+        OnChangeGun_2?.Invoke(cur_wp);
+    }
+    // Update is called once per frame
+    void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.C))
+        {
+            ChangeGun();
+        }
+    }
+}

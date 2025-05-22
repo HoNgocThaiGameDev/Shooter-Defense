@@ -1,0 +1,152 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Random = UnityEngine.Random;
+public class ZombieControl : EnemyControl
+{
+    public float speed_move = 2;
+
+    public ZombieDataBinding dataBinding;
+    public ZombieAttackState attackState;
+    public ZombieChaseState chaseState;
+    public ZombieWanderState wanderState;
+    // Start is called before the first frame update
+    public SphereCollider col_;
+    public override void Setup()
+    {
+     
+        col_.radius = range_Detect;
+        base.Setup();
+
+        chaseState.parent = this;
+        attackState.parent = this;
+        wanderState.parent = this;
+        wanderState.OnStart();
+        GotoState(wanderState);
+    }
+    public override void FixedUpdate()
+    {
+        base.FixedUpdate();
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        col_.radius = range_Detect;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+
+        if (other.gameObject.layer == 7)
+        {
+
+        }
+        if (current_state == wanderState)
+        {
+
+            CheckAttack();
+        }
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        //if (other.gameObject.layer != 7)
+        //    return;
+        if (current_state == wanderState)
+        {
+
+            CheckAttack();
+        }
+    }
+    private void CheckAttack()
+    {
+        float dis = Vector3.Distance(trans.position, characterControl.trans.position);
+
+        if (dis <= range_Attack)
+        {
+            GotoState(attackState);
+        }
+        else
+        {
+            GotoState(chaseState);
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        //if (other.gameObject.layer != 7)
+        //    return;
+        if (current_state != wanderState)
+        {
+            GotoState(wanderState);
+        }
+    }
+
+    /*
+    // Update is called once per frame
+    protected override void Update()
+    {
+        base.Update();
+        Vector3 dir = characterControl.trans.position - trans.position;
+        dir.Normalize();
+        float dot = Vector3.Dot(trans.forward, dir);
+
+        Vector3 target_character = characterControl.trans.position;
+
+        float dis = Vector3.Distance(trans.position, target_character);
+
+        if (dis <= range_Detect && dot>0.5f)
+        {
+           
+            // chase 
+            //time_count_attack >= attack_speed&&
+          
+
+            if(dis<=range_Attack&& time_count_attack >= attack_speed)
+            {
+                Debug.LogError("Attack by zombie");
+                time_count_attack = 0;
+                dataBinding.Speed = 0;
+            }
+            else
+            {
+                Vector3 dir_move = target_character - trans.position;
+                Quaternion q = Quaternion.LookRotation(dir_move.normalized, Vector3.up);
+                trans.localRotation = Quaternion.Slerp(trans.localRotation, q, Time.deltaTime * 3);
+                // trans.position = Vector3.Lerp(trans.position, targetMove, Time.deltaTime * speed_move);
+                trans.Translate(Vector3.forward * Time.deltaTime * speed_move * 2);
+                dataBinding.Speed = 2;
+               // dataBinding.NewPos = trans.position;
+            }
+        }
+        else
+        {
+            float dis_move = Vector3.Distance(trans.position, targetMove);
+            if (dis_move <= 0.1f)
+            {
+                RandomTarget();
+            }
+            else
+            {
+                Vector3 dir_move = targetMove - trans.position;
+                Quaternion q = Quaternion.LookRotation(dir_move.normalized, Vector3.up);
+                trans.localRotation = Quaternion.Slerp(trans.localRotation, q, Time.deltaTime * 2);
+                // trans.position = Vector3.Lerp(trans.position, targetMove, Time.deltaTime * speed_move);
+                trans.Translate(Vector3.forward * Time.deltaTime * speed_move);
+                dataBinding.Speed = 1;
+                // dataBinding.NewPos = trans.position;
+            }
+        }
+
+
+        // move 
+
+     
+    }
+    */
+    public override void OnDamage(int damge)
+    {
+        hp = hp - damge;
+        if (hp < 0)
+            hp = 0;
+        base.OnDamage(damge);
+    }
+}

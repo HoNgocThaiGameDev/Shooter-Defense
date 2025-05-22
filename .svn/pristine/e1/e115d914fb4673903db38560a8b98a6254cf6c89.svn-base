@@ -1,0 +1,57 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
+public class HomeView : BaseView
+{
+    public Text cash_lb;
+   
+  
+    
+
+    // Start is called before the first frame update
+    IEnumerator Start()
+    {
+        yield return new WaitForSeconds(3);
+        int cash = DataAPIController.instance.GetCash();
+        Debug.LogError(" cash : " + cash);
+
+        UserInfo info = DataAPIController.instance.GetUserInfo();
+        Debug.LogError(" user: " + info.username);
+      //  cash_lb.text = cash.ToString();
+        DataTrigger.RegisterValueChange(DataPath.CASH, OnCashChange);
+    }
+    private void OnCashChange(object dataChange)
+    {
+        cash_lb.text = ((int)dataChange).ToString();
+    }
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+    public void OnAddCash()
+    {
+        DataAPIController.instance.AddCash(50, () =>
+        {
+            Debug.LogError(" cash add");
+           
+        });
+    }
+    public void LoadGame(int id)
+    {
+        ConfigMissionRecord configMissionRecord = ConfigManager.instance.configMission.GetRecordByKeySearch(id);
+
+        LoadSceneManager.instance.LoadSceneByName(configMissionRecord.Scene_name, () =>
+        {
+            gameObject.SetActive(false);
+            GameManager.instance.InitMission(configMissionRecord);
+        });
+    }
+    private void OnDisable()
+    {
+        DataTrigger.UnRegisterValueChange(DataPath.CASH, OnCashChange);
+    }
+}

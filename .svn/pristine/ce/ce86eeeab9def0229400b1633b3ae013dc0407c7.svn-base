@@ -1,0 +1,61 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class EnemyControl : FSM_System
+{
+    public int hp;
+    public float range_Detect;
+    public float range_Attack;
+    public float attack_speed;
+    public float time_count_attack=0;
+    private int damage;
+    protected int critical;
+    public Transform trans;
+    public CharacterControl characterControl;
+    private void Awake()
+    {
+        trans = transform;
+        GameObject char_object = GameObject.FindGameObjectWithTag("Player");
+        characterControl = char_object.GetComponent<CharacterControl>();
+        Debug.LogError(" enemy controol awake");
+    }
+    // Start is called before the first frame update
+    void Start()
+    {
+        damage = 50;
+        Setup();
+    }
+
+    // Update is called once per frame
+    public override void Update()
+    {
+        base.Update();
+        time_count_attack += Time.deltaTime;
+    }
+    public virtual void Setup()
+    {
+       // Debug.LogError(" enemy init ");
+    }
+    public virtual void OnDamage(int damge)
+    {
+        Debug.LogError(gameObject.name + " HP: " + hp);
+    }
+    public void Attack()
+    {
+
+    }
+    public void Attack(int rate)
+    {
+
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, range_Detect);
+    }
+
+}
+
+// monoBehavior->EnemyCOntrol->ogreControle,ZombieControl

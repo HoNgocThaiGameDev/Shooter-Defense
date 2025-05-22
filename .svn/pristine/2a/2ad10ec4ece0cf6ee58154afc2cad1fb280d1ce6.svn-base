@@ -1,0 +1,111 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Sample : MonoBehaviour
+{
+    //
+    public int age = 10;
+    private float weight;
+    public int dayOfYear;
+    public bool isShow;
+    public GameObject[] array;
+    public string[] names = { " a", "d" };
+    private void Awake()
+    {
+        Debug.LogError(" Awake");
+    }
+
+    private void OnEnable()
+    {
+        Debug.LogError(" OnEnable");
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        Debug.LogError(" Start");
+        int i = 5;
+        int j = 5;
+        int a = i + j;
+        Debug.Log(a);
+        //call function
+        ShowInfo();
+
+        if (a >= 20)
+        {
+            ShowLog("Helo k17");
+        }
+        else if (a > 10)//11->20 
+        {
+
+        }
+        else if (a >= 0)//11->20 
+        {
+
+        }
+        else
+        {
+
+        }
+        for( i=0;i<10;i++)// index 
+        {
+            Debug.LogError(" i: " + i);
+        }
+
+    }
+    private void Reset()
+    {
+        Debug.LogError(" reset");
+    }
+    private void ShowInfo()
+    {
+        Debug.LogError(" Age: " + age);
+    }
+    private void ShowLog(string mess)
+    {
+        Debug.LogError(mess);
+    }
+    // Update is called once per frame
+    void Update()
+    {
+        Debug.LogError(" Update");
+    }
+    private void LateUpdate()
+    {
+        Debug.LogError(" LateUpdate");
+    }
+    private void FixedUpdate()
+    {
+        Debug.LogError(" FixedUpdate");
+    }
+
+    private void OnDisable()
+    {
+        Debug.LogError(" OnDisable");
+    }
+
+    private void OnDestroy()
+    {
+        Debug.LogError(" OnDestroy");
+    }
+
+    private void OnApplicationQuit()
+    {
+        Debug.LogError(" OnApplicationQuit");
+    }
+
+}
+/*
+ * 
+ static void Main(string[] args)
+        {
+            int i = 5, j = 5;
+
+            Console.WriteLine(i++); // Sử dụng giá trị i để in ra rồi mới tăng i
+            Console.WriteLine(++j); // Tăng j lên rồi mới in giá trị j ra màn hình
+            
+            Console.ReadKey();
+        }
+
+ * */

@@ -1,0 +1,64 @@
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class WeaponView : BaseView
+{
+    public TMP_Text cash_lb;
+    public Text weapon_lv;
+    public Text weapon_name;
+    private ConfigWeaponRecord cf;
+    private WeaponData weaponData;
+    // Start is called before the first frame update
+    public TapWeaponButton tap_buttons;
+    private WeaponViewGunListItem Cur_wp_item_list;
+    public override void Setup(ViewParam data)
+    {
+        int cash = DataAPIController.instance.GetCash();
+        cash_lb.text = cash.ToString();
+
+        WeaponViewParam param = data as WeaponViewParam;
+        weaponData = DataAPIController.instance.GetWeaponDataById(param.weaponID);
+        cf = ConfigManager.instance.configWeapon.GetRecordByKeySearch(param.weaponID);
+        // weapon_id.text = param.weaponID.ToString();
+        // weapon_lv.text = weaponData.level.ToString();
+        //  weapon_name.text = cf.Name.ToString();
+        tap_buttons.Init();
+    }
+    public override void OnShowView()
+    {
+        DataTrigger.RegisterValueChange(DataPath.DIC_WEAPON + "/"+ cf.id.Tokey(), OnWeaponDataChange);
+        DataTrigger.RegisterValueChange(DataPath.CASH, OnCashChange);
+    }
+    public override void OnHideView()
+    {
+        DataTrigger.UnRegisterValueChange(DataPath.DIC_WEAPON + "/" + cf.id.Tokey(), OnWeaponDataChange);
+        DataTrigger.UnRegisterValueChange(DataPath.CASH, OnCashChange);
+    }
+    private void OnCashChange(object dataChange)
+    {
+        cash_lb.text = ((int)dataChange).ToString();
+    }
+    private void OnWeaponDataChange(object data)
+    {
+        weaponData = data as WeaponData;
+      
+        weapon_lv.text = weaponData.level.ToString();
+    }
+    public void OnHomeView()
+    {
+        ViewManager.instance.SwitchView(ViewIndex.HomeView);
+    }
+    public void UpgradeWP()
+    {
+        DataAPIController.instance.UpgradelevelWeaponDataById(weaponData.id);
+    }
+    public void OnWeaponSelecte(WeaponViewGunListItem wp_item_list)
+    {
+        Cur_wp_item_list?.OnDeSelect();
+        Cur_wp_item_list = wp_item_list;
+    }
+   
+}

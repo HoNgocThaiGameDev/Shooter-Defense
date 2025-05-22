@@ -1,0 +1,23 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class SampleView : MonoBehaviour
+{
+    public Text cash_change_lb;
+    // Start is called before the first frame update
+    void Start()
+    {
+        DataTrigger.RegisterValueChange(DataPath.CASH, (data) =>
+        {
+            cash_change_lb.text = ((int)data).ToString();
+        });
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+}

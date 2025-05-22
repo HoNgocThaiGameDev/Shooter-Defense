@@ -1,0 +1,11 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public static class Utillities 
+{
+   public static string Tokey(this object val)
+    {
+        return "K_" + val.ToString();
+    }
+}

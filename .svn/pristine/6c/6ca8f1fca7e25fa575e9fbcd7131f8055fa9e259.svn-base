@@ -1,0 +1,35 @@
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class EnemyHub : MonoBehaviour
+{
+    public TMP_Text hp_lb;
+    public RectTransform tranz_rect;
+    public Image hp_progress;
+    // ingameUI
+    private RectTransform parent_rect;
+    private Transform anchor;
+    private Camera cam;
+    // Start is called before the first frame update
+    void Start()
+    {
+        cam = Camera.main;
+    }
+    public void Init(RectTransform parent,Transform anchor)
+    {
+        this.parent_rect = parent;
+        transform.SetParent(parent, true);
+        this.anchor = anchor;
+    }
+
+    // Update is called once per frame
+    private void LateUpdate()
+    {
+        Vector2 screen_pos = cam.WorldToScreenPoint(anchor.position);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(parent_rect, screen_pos, null, out var anchor2d);
+        tranz_rect.anchoredPosition = anchor2d;
+    }
+}

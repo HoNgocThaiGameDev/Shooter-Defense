@@ -1,0 +1,41 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ZombieDataBinding : MonoBehaviour
+{
+    public Animator animator;
+    public float Speed
+    {
+        set
+        {
+            animator.SetFloat(Anim_Key_Speed, value);
+        }
+    }
+    private Vector3 cur_Pos;
+    private Vector3 new_pos;
+    public Vector3 NewPos
+    {
+        set
+        {
+            new_pos = value;
+        }
+    }
+    private int Anim_Key_Speed;
+    // Start is called before the first frame update
+    void Start()
+    {
+        cur_Pos = transform.position;
+        new_pos = cur_Pos;
+        Anim_Key_Speed = Animator.StringToHash("Speed");
+    }
+
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+        //float dis = Vector3.Distance(cur_Pos, new_pos);
+      //  cur_Pos = new_pos;
+       // float v = dis / (Time.deltaTime);
+       // animator.SetFloat(Anim_Key_Speed, v*2);
+    }
+}

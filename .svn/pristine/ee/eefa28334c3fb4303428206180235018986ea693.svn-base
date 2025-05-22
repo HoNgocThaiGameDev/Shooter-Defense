@@ -1,0 +1,21 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "DataAPIController", menuName = "BY/DataAPIController", order = 1)]
+public class DataAPIController : ScriptableObject
+{
+    public static DataAPIController instance;
+    [SerializeField]
+    private DataModel dataModel;
+    public void InitData(Action callback)
+    {
+        instance = this;
+        dataModel.LoadDataLocal((isNew) =>{
+            Debug.LogError(" isnew : " + isNew);
+            callback?.Invoke();
+
+        });
+    }
+}

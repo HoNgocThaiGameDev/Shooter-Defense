@@ -1,0 +1,65 @@
+using System.Collections;
+using System.Collections.Generic;
+
+using UnityEngine;
+
+public class OgreControl : EnemyControl
+{
+    public float armo = 1;
+    public float speed_rotate = 5;
+    public Ogre_AttackState attackState;
+    public Ogre_ChaseState chaseState;
+    public Ogre_WanderState wanderState;
+  
+    public OgreDataBinding dataBinding;
+
+    // Start is called before the first frame update
+    public override void Setup()
+    {
+        Debug.LogError(" Ogre Init");
+        GameManager.instance.sample = 3;
+     
+        //base.Setup();
+        hp = hp * 2;
+        attackState.parent = this;
+        chaseState.parent = this;
+        wanderState.parent = this;
+        GotoState(wanderState);
+        agent_.Warp(trans.position);
+        agent_.updateRotation = false;
+        //agent_.updatePosition = false;
+    }
+
+  
+    /*
+    // Update is called once per frame
+    protected override void Update()
+    {
+        base.Update();
+        Vector3 dir = characterControl.trans.position - trans.position;
+       // dir.Normalize();
+        //1.
+        // trans.forward = Vector3.Lerp(trans.forward,dir,Time.deltaTime* speed_rotate);
+        // trans.forward = Vector3.MoveTowards(trans.forward, dir, Time.deltaTime * speed_rotate);
+
+        Quaternion q = Quaternion.LookRotation(dir.normalized, Vector3.up);
+
+        trans.rotation = Quaternion.Slerp(trans.rotation, q, Time.deltaTime * speed_rotate);
+        
+        float dis = Vector3.Distance(trans.position, characterControl.trans.position);
+
+        if(dis<=range_Detect&&time_count_attack>=attack_speed)
+        {
+            Debug.LogError("Attack by orge");
+            time_count_attack = 0;
+        }
+    }
+    */
+
+    public override void OnDamage(int damge)
+    {
+        hp -= (int)(damge * 0.5f);
+        //hp=hp- (int)(damge * 0.5f);
+        base.OnDamage(damge);
+    }
+}

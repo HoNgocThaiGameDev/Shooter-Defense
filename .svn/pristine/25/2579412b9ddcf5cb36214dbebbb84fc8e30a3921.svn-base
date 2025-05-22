@@ -1,0 +1,47 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[Serializable]
+public class Ogre_WanderState : FSM_State
+{
+    [NonSerialized]
+    public OgreControl parent;
+    private Transform trans_point;
+    public float speed_move = 1;
+    public override void OnEnter()
+    {
+        base.OnEnter();
+        trans_point = parent.GetPointMove();
+    }
+
+    public override void UpdateState()
+    {
+
+        float dis = Vector3.Distance(parent.trans.position, parent.characterControl.trans.position);
+
+        if (dis <= parent.range_Detect)
+        {
+            parent.GotoState(parent.chaseState);
+        }
+        else
+        {
+            Vector3 dir = trans_point.position - parent.trans.position;
+            dir.Normalize();
+            if (dir != Vector3.zero)
+            {
+                Quaternion q = Quaternion.LookRotation(dir.normalized, Vector3.up);
+                parent.trans.localRotation = Quaternion.Slerp(parent.trans.localRotation, q, Time.deltaTime * 2);
+
+            }
+            parent.trans.Translate(Vector3.forward * Time.deltaTime * speed_move);
+            parent.dataBinding.Speed = 1;
+            if (Vector3.Distance(parent.trans.position, trans_point.position) <= 0.1f)
+            {
+                trans_point = parent.GetPointMove();
+            }
+        }
+      
+    }
+}

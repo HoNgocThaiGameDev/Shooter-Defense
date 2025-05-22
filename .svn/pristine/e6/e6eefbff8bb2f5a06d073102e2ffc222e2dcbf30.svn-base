@@ -1,0 +1,54 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[Serializable]
+public class ZombieWanderState : FSM_State
+{
+    [NonSerialized]
+    public ZombieControl parent;
+    public List<Transform> ls_point;
+    private int index = -1;
+    private Transform cur_point;
+    private Transform GetPoint()
+    {
+        index++;
+        if(index>=ls_point.Count)
+        {
+            index = 0;
+        }
+        return ls_point[index];
+    }
+    public void OnStart()
+    {
+        foreach(Transform tr in ls_point)
+        {
+            tr.SetParent(null);
+        }
+    }
+    public override void OnEnter()
+    {
+        cur_point = GetPoint();
+    }
+    public override void FixedUpdateState()
+    {
+        float dis = Vector3.Distance(parent.trans.position, cur_point.position);
+        if(dis<=0.1f)
+        {
+            cur_point = GetPoint();
+        }
+        Vector3 dir = cur_point.position - parent.trans.position;
+        dir.Normalize();
+        parent.dataBinding.Speed = 1;
+        parent.trans.forward = dir;
+        parent.trans.Translate(Vector3.forward * Time.deltaTime);
+
+
+    }
+    public override void Exit()
+    {
+        base.Exit();
+        parent.dataBinding.Speed = 0;
+    }
+}

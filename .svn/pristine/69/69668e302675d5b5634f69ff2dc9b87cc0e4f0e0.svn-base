@@ -1,0 +1,50 @@
+using Newtonsoft.Json;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+
+[CreateAssetMenu(fileName ="DataModel",menuName ="BY/DataModel",order =1)]
+public class DataModel : ScriptableObject
+{
+    //C.R.U.D
+    private UserData userData;
+    public void LoadDataLocal(Action<bool> callback)
+    {
+        if(LoadData())
+        {
+            callback(false);
+        }
+        else
+        {
+            // create new data 
+            userData = new UserData();
+            SaveData();
+            callback(true);
+        }
+    }
+    private void SaveData()
+    {
+        string s_data = JsonConvert.SerializeObject(userData);
+        PlayerPrefs.SetString("DATA",s_data);
+    }
+    private bool LoadData()
+    {
+        if(PlayerPrefs.HasKey("DATA"))
+        {
+            string s_data = PlayerPrefs.GetString("DATA");
+            if(s_data.Length<10)
+            {
+                return false;
+            }
+            else
+            {
+                userData = JsonConvert.DeserializeObject<UserData>(s_data);
+                return true;
+            }
+           
+        }
+        return false;
+    }
+}

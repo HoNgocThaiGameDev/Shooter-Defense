@@ -1,0 +1,44 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[Serializable]
+public class ZombieChaseState : FSM_State
+{
+    [NonSerialized]
+    public ZombieControl parent;
+    public float speed_move = 2;
+    public override void OnEnter()
+    {
+        base.OnEnter();
+
+        
+    }
+    public override void UpdateState()
+    {
+
+        float dis = Vector3.Distance(parent.trans.position, parent.characterControl.trans.position);
+
+        if (dis <= parent.range_Attack)
+        {
+            parent.GotoState(parent.attackState);
+        }
+       
+        else
+        {
+            Vector3 dir = parent.characterControl.trans.position - parent.trans.position;
+            dir.Normalize();
+            if (dir != Vector3.zero)
+            {
+                Quaternion q = Quaternion.LookRotation(dir.normalized, Vector3.up);
+                parent.trans.localRotation = Quaternion.Slerp(parent.trans.localRotation, q, Time.deltaTime * 2);
+
+            }
+            parent.trans.Translate(Vector3.forward * Time.deltaTime * speed_move);
+            parent.dataBinding.Speed = 2;
+
+        }
+    }
+}
+
